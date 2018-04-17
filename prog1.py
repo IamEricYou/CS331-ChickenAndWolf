@@ -2,6 +2,29 @@
 import sys
 import numpy as np
 
+class PriorityQueue:
+    def __init__(self):
+        self.list = []
+
+    def add(self, state):
+        self.list.append(state)
+
+    def pop(self):
+        return self.list.pop(0)
+
+    def size(self):
+        return len(self.list)
+
+    def empty(self):
+        if len(self.list)==0:
+            return True
+        return False
+
+    def pQueue(self):
+        for i in self.list:
+            print i
+        return
+
 def read_file(initial):
     with open(initial) as f:
         line = f.read().splitlines()
