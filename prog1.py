@@ -48,7 +48,6 @@ def generateChild(parentNode, conditions):
     return child
 
 def doAction(act, parentNode, childIndex):
-<<<<<<< HEAD
     """
     Act == 1 -> 1 chicken
     Act == 2 -> 2 chickens
@@ -56,10 +55,6 @@ def doAction(act, parentNode, childIndex):
     Act == 4 -> 1 wolf
     Act == 5 -> 2 wolves
     """
-=======
-
-    print act
->>>>>>> 42695f8e3f180e148b92ee28e676f11bccaee862
     if parentNode[0][5] == 1:
         if parentNode[0][3] > 0 and ((parentNode[0][3]-1) >= parentNode[0][4]) and act == 0:
             return generateChild(parentNode, [[1,0,1,-1,0,-1], parentNode[2], childIndex])
