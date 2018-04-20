@@ -80,18 +80,32 @@ def doAction(act, parentNode, childIndex):
 
 def solutionSet(tree, child):
     counter = 0
+    temp = len(tree)-1
     list = []
-    while counter is not -1:
-        print "child"
-        print child
-        print ""
-        parent = tree[child[1]]
-        print "parent"
-        print parent
-        print ""
-        child = parent
-        counter = parent[1]
-    return
+    print(np.matrix(tree))
+    list.append(tree[len(tree)-1][0])
+    while True:
+        if tree[len(tree)-counter-1][1] == -1:
+            #list.append(tree[0][0])
+            break;
+        for num in range(0,temp):
+            if tree[temp][1] == tree[num][2]:
+                #print("Counter: " + str(temp) + "Num: " + str(num))
+                list.append(tree[num][0])
+                temp = num
+                #print(temp)
+                break;
+            
+        counter = counter + 1
+    temp_li = []
+    for i in reversed(list):
+        temp_li.append(i)
+    #print(np.matrix(temp_li))
+    """
+    temp_file = open('solution.txt','w')
+    for item in temp_li:
+        print>>temp_file, item
+    """
 
 def BFS(state, goal):
     node = state
