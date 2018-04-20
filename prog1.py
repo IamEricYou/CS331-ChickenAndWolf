@@ -46,10 +46,10 @@ def doAction(act, parentNode, childIndex):
 
     print act
     if parentNode[0][5] == 1:
-        if parentNode[0][3] > 0 and ((parentNode[0][3]-1) >= parentNode[0][4] or (parentNode[0][3]-1) ==0) and act == 0:
+        if parentNode[0][3] > 0 and ((parentNode[0][3]-1) >= parentNode[0][4] or (parentNode[0][3]-1) ==0) and parentNode[0][0]+1 >= parentNode[0][1] and act == 0:
             return generateChild(parentNode, [[1,0,1,-1,0,-1], parentNode[2], childIndex])
 
-        elif parentNode[0][3] > 1 and ((parentNode[0][3]-2) >= parentNode[0][4] or (parentNode[0][3]-2)==0) and act == 1:
+        elif parentNode[0][3] > 1 and ((parentNode[0][3]-2) >= parentNode[0][4] or (parentNode[0][3]-2)==0) and parentNode[0][0]+2 >= parentNode[0][1] and act == 1:
             return generateChild(parentNode, [[2,0,1,-2,0,-1], parentNode[2], childIndex])
 
         elif (parentNode[0][4] > 0) and (parentNode[0][0] >= (parentNode[0][1]+1) or parentNode[0][0] == 0) and act == 2:
@@ -62,10 +62,10 @@ def doAction(act, parentNode, childIndex):
             return generateChild(parentNode, [[0,2,1,0,-2,-1], parentNode[2], childIndex])
 
     elif parentNode[0][5] == 0:
-        if parentNode[0][0] > 0 and ((parentNode[0][0]-1) >= parentNode[0][1] or (parentNode[0][0]-1) ==0) and act == 0:
+        if parentNode[0][0] > 0 and ((parentNode[0][0]-1) >= parentNode[0][1] or (parentNode[0][0]-1) ==0) and (parentNode[0][3]+1) >= parentNode[0][4] and act == 0:
             return generateChild(parentNode, [[-1,0,-1,1,0,1], parentNode[2], childIndex])
 
-        elif parentNode[0][0] > 1 and ((parentNode[0][0]-2) >= parentNode[0][1] or (parentNode[0][0]-2) ==0)and act == 1:
+        elif parentNode[0][0] > 1 and ((parentNode[0][0]-2) >= parentNode[0][1] or (parentNode[0][0]-2) ==0)and (parentNode[0][3]+2) >= parentNode[0][4] and act == 1:
             return generateChild(parentNode, [[-2,0,-1,2,0,1], parentNode[2], childIndex])
 
         elif parentNode[0][1] > 0 and (parentNode[0][3] >= (parentNode[0][4]+1) or parentNode[0][3] == 0) and act == 2:
