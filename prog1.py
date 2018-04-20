@@ -2,6 +2,7 @@
 import sys
 import numpy as np
 import copy
+from operator import itemgetter
 
 class PriorityQueue:
     def __init__(self):
@@ -31,6 +32,10 @@ class PriorityQueue:
             if search == i:
                 return True
         return False
+   
+    def sort_by_cost(self):#sort by the cost
+        self.list.sort(key=itemgetter(3))
+
 
 def generateChild(parentNode, conditions):
     childx = []
@@ -41,6 +46,13 @@ def generateChild(parentNode, conditions):
     return child
 
 def doAction(act, parentNode, childIndex):
+    """
+    Act == 1 -> 1 chicken
+    Act == 2 -> 2 chickens
+    Act == 3 -> 1 chicken and 1 wolf
+    Act == 4 -> 1 wolf
+    Act == 5 -> 2 wolves
+    """
     if parentNode[0][5] == 1:
         if parentNode[0][3] > 0 and (parentNode[0][3]-1) >= parentNode[0][4] and act == 0:
             return generateChild(parentNode, [[1,0,1,-1,0,-1], parentNode[2], childIndex])
@@ -116,13 +128,59 @@ def BFS(state, goal):
                     fronteir.add(child)
     return
 
+def heristic_value(curr_node,goal_node):
+    #print(curr_node[0])
+    h_value  = (goal_node[0] - curr_node[0])+(goal_node[1] - curr_node[1]) 
+    return h_value
+
+def astar(initial,goal):
+    #Pseudo Code for general a-star algorithm
+    #while priority Queue Size
+    #   current node = pq.pop
+    #   if node == goal
+    #       break
+    #   for next node
+    #       pq.push(next node, cost(node) + cost + heuristic(next node))
+    counter = 0
+    nodeVisited = 0
+    frontier = PriorityQueue()
+    frontier.add([initial,-1,0,heristic_value(initial,goal)])
+    explored = []
+
+    while True:
+        if frontier.empty():
+            print("No solutions found.")
+            sys.exit(1)
+
+        curr_node = frontier.pop()
+
+        if np.array_equal(curr_node[0],goal):
+            print("You found the solution")
+            print("It took " + str(counter) + "steps")
+            print(str(len(explored)) + "nodes were visited")
+            break;
+        #print(curr_node[:-1]) #remove last element
+        print(curr_node)
+
+        if curr_node[0] not in explored:
+            explored.append(curr_node)
+            #print(explored)
+        frontier.sort_by_cost()
+        
+
+        #add node into explored
+        #if child is not in explored
+        #frontier.add(child)
+        break;
+
 
 def read_file(initial):
     with open(initial) as f:
-        line = f.read().splitlines()
+        line1 = f.read().split('\n')[0].split(',')
+    with open(initial) as f:
+        line2 = f.read().split('\n')[1].split(',')
 
-    #print(line)
-    return line
+    return map(int,line1+line2) #convert list string to integer
 
 def main():
     if len(sys.argv) != 5:
@@ -133,7 +191,18 @@ def main():
     goal_state = read_file(sys.argv[2])
     mode = sys.argv[3]
     output = sys.argv[4]
-
+        
+    if mode == "bfs":
+        bfs(initial_state,goal_state)
+    elif mode == "dfs":
+        dfs(initial_state,goal_state)
+    elif mode == "iddfs":
+        iddfs(initial_state,goal_state)
+    elif mode == "astar":
+        astar(initial_state,goal_state)
+    else:
+        print("Wrong command. Check your command")
+        return None
     
 
 if __name__ == "__main__":
