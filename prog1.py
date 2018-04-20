@@ -10,6 +10,10 @@ class PriorityQueue:
     def add(self, state):
         self.list.append(state)
 
+    def addFront(self, state):
+        for i in reversed(state):
+            self.list = [i] + self.list
+
     def pop(self):
         return self.list.pop(0)
 
@@ -32,19 +36,44 @@ class PriorityQueue:
                 return True
         return False
 
+def solutionSet(tree, child):
+    counter = 0
+    temp = len(tree)-1
+    list = []
+    print(np.matrix(tree))
+    list.append(tree[len(tree)-1][0])
+    while True:
+        if tree[len(tree)-counter-1][1] == -1:
+            #list.append(tree[0][0])
+            break;
+        for num in range(0,temp):
+            if tree[temp][1] == tree[num][2]:
+                #print("Counter: " + str(temp) + "Num: " + str(num))
+                list.append(tree[num][0])
+                temp = num
+                #print(temp)
+                break;
+
+        counter = counter + 1
+    temp_li = []
+    for i in reversed(list):
+        temp_li.append(i)
+    print(np.matrix(temp_li))
+    """
+    temp_file = open('solution.txt','w')
+    for item in temp_li:
+        print>>temp_file, item
+    """
+
+
 def generateChild(parentNode, conditions):
     childx = []
-    print parentNode
-    print conditions
     for i in range(0,6):
         childx.append((parentNode[0][i]+conditions[0][i]))
     child = [childx, conditions[1], conditions[2]]
-    print child
     return child
 
 def doAction(act, parentNode, childIndex):
-
-    print act
     if parentNode[0][5] == 1:
         if parentNode[0][3] > 0 and ((parentNode[0][3]-1) >= parentNode[0][4] or (parentNode[0][3]-1) ==0) and parentNode[0][0]+1 >= parentNode[0][1] and act == 0:
             return generateChild(parentNode, [[1,0,1,-1,0,-1], parentNode[2], childIndex])
@@ -78,38 +107,9 @@ def doAction(act, parentNode, childIndex):
             return generateChild(parentNode, [[0,-2,-1,0,2,1], parentNode[2], childIndex])
     return False
 
-def solutionSet(tree, child):
-    counter = 0
-    temp = len(tree)-1
-    list = []
-    print(np.matrix(tree))
-    list.append(tree[len(tree)-1][0])
-    while True:
-        if tree[len(tree)-counter-1][1] == -1:
-            #list.append(tree[0][0])
-            break;
-        for num in range(0,temp):
-            if tree[temp][1] == tree[num][2]:
-                #print("Counter: " + str(temp) + "Num: " + str(num))
-                list.append(tree[num][0])
-                temp = num
-                #print(temp)
-                break;
-            
-        counter = counter + 1
-    temp_li = []
-    for i in reversed(list):
-        temp_li.append(i)
-    #print(np.matrix(temp_li))
-    """
-    temp_file = open('solution.txt','w')
-    for item in temp_li:
-        print>>temp_file, item
-    """
-
 def BFS(state, goal):
     node = state
-    counter = 0
+    counter = 1
     nodesVisited = 0
 
     #initial node is the end goal
@@ -137,9 +137,9 @@ def BFS(state, goal):
 
         #if node not yet visited
         if node[0] not in explored:
-            print "node not visited"
-            print node[0]
-            print " "
+            # print "node not visited"
+            # print node[0]
+            # print " "
             explored.append(node[0])
             nodesVisited+=1
 
@@ -149,16 +149,142 @@ def BFS(state, goal):
                 if child is not False:
                     if child[0] not in explored and not fronteir.found(child):
                         counter+=1
+                        tree.append(child)
                         if np.array_equal(child[0],goal):
                             print "solution found"
                             print nodesVisited
-                            print child
+                            # print child
                             solutionSet(tree, child)
                             return
                         fronteir.add(child)
+                    # else:
+                    #     print "ignore child"
+    return
+
+def DFS (state, goal):
+    node = state
+    counter = 1
+    nodesVisited = 0
+
+    #initial node is the end goal
+    if np.array_equal(node,goal):
+        print counter
+        print "solution found"
+        return
+
+    #set up queue, explored, and tree
+    fronteir = PriorityQueue()
+    fronteir.add([state,-1,0])
+    explored = []
+    tree = [[state,-1,0]]
+
+    loopCounter = True
+    while loopCounter:
+        # exhausted search
+        if fronteir.empty():
+            #failed
+            print "search failed"
+            return
+
+        #next node to visit
+        node = fronteir.pop()
+
+        #if node not yet visited
+        if node[0] not in explored:
+            # print "node not visited"
+            # print node
+            # print " "
+            explored.append(node[0])
+            nodesVisited+=1
+
+            childList = []
+            #generate childs
+            for i in range(0,5):
+                child = doAction(i, node, counter)
+                if child is not False:
+                    if child[0] not in explored and not fronteir.found(child):
+                        counter+=1
                         tree.append(child)
-                    else:
-                        print "ignore child"
+                        if np.array_equal(child[0],goal):
+                            print "solution found"
+                            print nodesVisited
+                            # print child
+                            solutionSet(tree, child)
+                            return
+                        childList += [child]
+                    # else:
+                    #     print "ignore child"
+            fronteir.addFront(childList)
+    return
+
+def IDDFS (state, goal):
+    step = 1
+    while True:
+        node = state
+        depth = 0
+        counter = 1
+        nodesVisited = 0
+        maxDepth = step
+        print maxDepth
+        #initial node is the end goal
+        if np.array_equal(node,goal):
+            print counter
+            print "solution found"
+            return
+
+        #set up queue, explored, and tree
+        fronteir = PriorityQueue()
+        fronteir.add([state,-1,0])
+        explored = []
+        tree = [[state,-1,0]]
+        loopCounter = True
+        nodeLevel = [1,0]
+
+        while loopCounter:
+            # exhausted search
+            if fronteir.empty():
+                #failed
+                print "search failed"
+                return
+
+            #next node to visit
+            node = fronteir.pop()
+
+            #remove from level
+            nodeLevel[0] -=1
+            if nodeLevel[0] == 0:
+                depth+=1
+
+            #if node not yet visited
+            if node[0] not in explored:
+                # print "node not visited"
+                # print node[0]
+                # print " "
+                explored.append(node[0])
+                nodesVisited+=1
+
+                count = 0
+                #generate childs
+                for i in range(0,5):
+                    child = doAction(i, node, counter)
+                    if child is not False:
+                        if child[0] not in explored and not fronteir.found(child):
+                            counter+=1
+                            tree.append(child)
+                            if np.array_equal(child[0],goal):
+                                solutionSet(tree, child)
+                                return
+                            fronteir.add(child)
+                            count +=1
+                nodeLevel[1]+=count
+
+            if nodeLevel[0] == 0:
+                nodeLevel[0] = nodeLevel[1]
+                nodeLevel[1] = 0
+
+            if depth == maxDepth:
+                loopCounter = False
+                step+=1
     return
 
 def main():
@@ -177,7 +303,7 @@ def main():
     #     if child is not False:
     #         counterx+=1
 
-    BFS([0,0,0,3,3,1],[3,3,1,0,0,0])
+    IDDFS([0,0,0,100,95,1],[100,95,1,0,0,0])
 
 
 
