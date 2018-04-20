@@ -77,7 +77,7 @@ def solutionSet(tree, output, counter, nodesVisited):
         print>>temp_file, item
     temp_file.write("\n# of nodes were visited : " + str(nodesVisited))
     temp_file.write("\n# of nodes were created: " + str(counter))
-    temp_file.write("\n# steps for solution: " + str(len(temp_li)))
+    temp_file.write("\n# steps for solution: " + str(len(temp_li)) + "\n")
 
 def generateChild(parentNode, conditions):
     childx = []
