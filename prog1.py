@@ -218,7 +218,7 @@ def main():
     else:
         print("Wrong command. Check your command")
         return None
-    
+    """
 
 if __name__ == "__main__":
     main()
