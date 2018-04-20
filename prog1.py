@@ -34,27 +34,31 @@ class PriorityQueue:
 
 def generateChild(parentNode, conditions):
     childx = []
-    for i in range(0,5):
+    print parentNode
+    print conditions
+    for i in range(0,6):
         childx.append((parentNode[0][i]+conditions[0][i]))
     child = [childx, conditions[1], conditions[2]]
     print child
     return child
 
 def doAction(act, parentNode, childIndex):
+
+    print act
     if parentNode[0][5] == 1:
-        if parentNode[0][3] > 0 and (parentNode[0][3]-1) >= parentNode[0][4] and act == 0:
+        if parentNode[0][3] > 0 and ((parentNode[0][3]-1) >= parentNode[0][4]) and act == 0:
             return generateChild(parentNode, [[1,0,1,-1,0,-1], parentNode[2], childIndex])
 
         elif parentNode[0][3] > 1 and (parentNode[0][3]-2) >= parentNode[0][4] and act == 1:
             return generateChild(parentNode, [[2,0,1,-2,0,-1], parentNode[2], childIndex])
 
-        elif parentNode[0][4] > 0 and parentNode[0][0] >= (parentNode[0][1]+1) and act == 2:
+        elif (parentNode[0][4] > 0) and (parentNode[0][0] >= (parentNode[0][1]+1) or parentNode[0][0] == 0) and act == 2:
             return generateChild(parentNode, [[0,1,1,0,-1,-1], parentNode[2], childIndex])
 
         elif parentNode[0][4] > 0 and parentNode[0][3] > 0 and act == 3:
             return generateChild(parentNode, [[1,1,1,-1,-1,-1], parentNode[2], childIndex])
 
-        elif parentNode[0][4] > 1 and (parentNode[0][0] >= parentNode[0][1]+2) and act == 4:
+        elif parentNode[0][4] > 1 and (parentNode[0][0] >= parentNode[0][1]+2 or parentNode[0][0] == 0) and act == 4:
             return generateChild(parentNode, [[0,2,1,0,-2,-1], parentNode[2], childIndex])
 
     elif parentNode[0][5] == 0:
@@ -64,16 +68,16 @@ def doAction(act, parentNode, childIndex):
         elif parentNode[0][0] > 1 and (parentNode[0][0]-2) >= parentNode[0][1] and act == 1:
             return generateChild(parentNode, [[-2,0,-1,2,0,1], parentNode[2], childIndex])
 
-        elif parentNode[0][1] > 0 and parentNode[0][3] >= (parentNode[0][4]+1) and act == 2:
+        elif parentNode[0][1] > 0 and (parentNode[0][3] >= (parentNode[0][4]+1) or parentNode[0][3] == 0) and act == 2:
             return generateChild(parentNode, [[0,-1,-1,0,1,1], parentNode[2], childIndex])
 
         elif parentNode[0][1] > 0 and parentNode[0][0] > 0 and act == 3:
             return generateChild(parentNode, [[-1,-1,-1,1,1,1], parentNode[2], childIndex])
 
-        elif parentNode[0][4] > 1 and (parentNode[0][0] >= parentNode[0][1]+2) and act == 4:
+        elif parentNode[0][1] > 1 and (parentNode[0][3] >= (parentNode[0][4]+2) or parentNode[0][3] == 0) and act == 4:
             return generateChild(parentNode, [[0,2,1,0,-2,-1], parentNode[2], childIndex])
 
-    return [[0,0,0,0,0,0], -1, -1]
+    return False
 
 def BFS(state, goal):
     node = state
@@ -116,25 +120,24 @@ def BFS(state, goal):
                     fronteir.add(child)
     return
 
-
-def read_file(initial):
-    with open(initial) as f:
-        line = f.read().splitlines()
-
-    #print(line)
-    return line
-
 def main():
-    if len(sys.argv) != 5:
-        print('Usage: < initial state file > < goal state file > < mode > < output file >')
-        return None
+    # for args in sys.argv[1:]:
+    #     print args
+    #
+    # initial_state = sys.argv[1]
+    # goal_state = sys.argv[2]
+    # mode = sys.argv[3]
+    # output = sys.argv[4]
 
-    initial_state = read_file(sys.argv[1])
-    goal_state = read_file(sys.argv[2])
-    mode = sys.argv[3]
-    output = sys.argv[4]
+    node = [[2,2,1,1,1,0],-1,0]
+    counterx = 1
+    for i in range(0,5):
+        child = doAction(i, node, counterx)
+        if child is not False:
+            counterx+=1
+    #BFS([0,0,0,3,3,1],[3,3,1,0,0,0])
 
-    
+
 
 if __name__ == "__main__":
     main()
